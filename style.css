@@ -66,7 +66,7 @@ body{
 .social a:hover{color:var(--accent);border-bottom-color:var(--accent);transform:translateY(-2px)}
 .section{padding:48px 24px}
 .grid{max-width:1100px;margin:0 auto;display:grid;gap:16px;grid-template-columns:repeat(12,1fr)}
-.card{grid-column: span 4;padding:22px;transition:transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1)}
+.card{grid-column: span 4;padding:22px;transition:transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);border:none;background:rgba(255,255,255,0.02)}
 .card:hover{transform:translateY(-4px)}
 .card h3{margin:6px 0 8px;transition:color 0.3s ease}
 .card:hover h3{color:var(--accent)}
@@ -120,26 +120,26 @@ body{
   --bg: #f5f7fb;
   --text: #0f1222;
   --muted: #5b6275;
-  --glass-bg: rgba(255, 255, 255, 0.55);
-  --glass-stroke: rgba(24, 24, 24, 0.08);
-  --glass-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  --glass-bg: rgba(255, 255, 255, 0.35);
+  --glass-stroke: rgba(24, 24, 24, 0.03);
+  --glass-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
 }
 [data-theme="dark"] {
   --bg: #0b0d12;
   --text: #e8ebf1;
   --muted: #a4abbc;
-  --glass-bg: rgba(16, 18, 24, 0.5);
-  --glass-stroke: rgba(255, 255, 255, 0.08);
-  --glass-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --glass-bg: rgba(16, 18, 24, 0.3);
+  --glass-stroke: rgba(255, 255, 255, 0.03);
+  --glass-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #0b0d12;
     --text: #e8ebf1;
     --muted: #a4abbc;
-    --glass-bg: rgba(16, 18, 24, 0.5);
-    --glass-stroke: rgba(255, 255, 255, 0.08);
-    --glass-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    --glass-bg: rgba(16, 18, 24, 0.3);
+    --glass-stroke: rgba(255, 255, 255, 0.03);
+    --glass-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
   }
 }
 html, body {
@@ -155,8 +155,9 @@ html, body {
   backdrop-filter: saturate(180%) blur(16px);
 }
 .glass.subtle {
-  background: color-mix(in oklab, var(--glass-bg) 70%, transparent);
+  background: color-mix(in oklab, var(--glass-bg) 50%, transparent);
   box-shadow: none;
+  border: none;
 }
 html, body {
   height: 100%;
