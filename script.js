@@ -1,6 +1,24 @@
 document.getElementById('year').textContent = new Date().getFullYear();
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+// Loading Animation
+(() => {
+  const loader = document.getElementById('loader');
+  if (!loader || reduceMotion) {
+    if (loader) loader.style.display = 'none';
+    return;
+  }
+  
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      loader.classList.add('loaded');
+      setTimeout(() => {
+        loader.style.display = 'none';
+      }, 600);
+    }, 1200);
+  });
+})();
+
 // Dock auto-hide on scroll
 (() => {
   const dock = document.querySelector('.dock');
