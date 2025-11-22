@@ -1,5 +1,69 @@
 document.getElementById('year').textContent = new Date().getFullYear();
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// Dock auto-hide on scroll
+(() => {
+  const dock = document.querySelector('.dock');
+  if (!dock) return;
+  
+  let lastScrollY = window.scrollY;
+  let ticking = false;
+  
+  const updateDock = () => {
+    const currentScrollY = window.scrollY;
+    const scrollDelta = currentScrollY - lastScrollY;
+    
+    // Hide dock when scrolling down fast (more than 5px)
+    if (scrollDelta > 5 && currentScrollY > 100) {
+      dock.classList.add('dock-hidden');
+    } 
+    // Show dock when scrolling up or near top
+    else if (scrollDelta < 0 || currentScrollY < 100) {
+      dock.classList.remove('dock-hidden');
+    }
+    
+    lastScrollY = currentScrollY;
+    ticking = false;
+  };
+  
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(updateDock);
+      ticking = true;
+    }
+  }, { passive: true });
+})();
+
+// Theme Toggle
+(() => {
+  const themeToggle = document.querySelector('.theme-toggle');
+  const html = document.documentElement;
+  const meta = document.querySelector('meta[name="theme-color"]');
+  
+  // Check for saved theme preference or default to system preference
+  const savedTheme = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const currentTheme = savedTheme || (prefersDark ? 'dark' : 'light');
+  
+  // Apply theme on load
+  html.setAttribute('data-theme', currentTheme);
+  if (meta) {
+    meta.setAttribute('content', currentTheme === 'dark' ? '#0b0d12' : '#f5f7fb');
+  }
+  
+  // Toggle theme on button click
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      const newTheme = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      if (meta) {
+        meta.setAttribute('content', newTheme === 'dark' ? '#0b0d12' : '#f5f7fb');
+      }
+    });
+  }
+})();
+
 (() => {
   const els = Array.from(document.querySelectorAll('[data-reveal]'));
   if (!els.length || reduceMotion) return;
@@ -103,19 +167,6 @@ document.addEventListener('click', (e) => {
   }, { passive: false });
   window.addEventListener('touchend', () => { touching = false; if (stretch > 0) release(); }, { passive: true });
   window.addEventListener('scroll', () => { if (stretch > 0 && !atTop() && !atBottom()) release(); }, { passive: true });
-})();
-(function () {
-  const nav = document.querySelector('.nav');
-  const spacer = document.getElementById('nav-spacer');
-  if (!nav || !spacer) return;
-  function sizeNavSpace() {
-    const cs = getComputedStyle(nav);
-    const top = parseFloat(cs.top) || 0;
-    spacer.style.height = (nav.offsetHeight + top) + 'px';
-  }
-  window.addEventListener('load', sizeNavSpace, { once: true });
-  window.addEventListener('resize', sizeNavSpace);
-  document.fonts && document.fonts.ready && document.fonts.ready.then(sizeNavSpace);
 })();
 (function () {
   const intro = document.getElementById('intro');

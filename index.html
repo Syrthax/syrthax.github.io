@@ -31,31 +31,38 @@
       <span class="blob b3"></span>
       <span class="grain" aria-hidden="true"></span>
     </div>
-    <div id="page">
-<header class="nav glass" role="banner">
-    <a class="brand" href="#home" aria-label="Home">
-      <img src="assets/main.svg" alt="Logo" width="28" height="28" />
-      <span>Sarthak</span>
+    <nav class="dock glass" role="navigation" aria-label="Main navigation">
+    <a href="#home" class="dock-icon" aria-label="Home" title="Home">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
     </a>
-    <nav class="links" role="navigation">
-      <a href="#about">About</a>
-      <a href="#work">Work</a>
-      <a href="#contact" class="btn small">Contact</a>
-    </nav>
-  </header>
-    <div id="nav-spacer" aria-hidden="true"></div>
+    <a href="#about" class="dock-icon" aria-label="About" title="About">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </a>
+    <a href="#work" class="dock-icon" aria-label="Work" title="Work">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+    </a>
+    <a href="#contact" class="dock-icon" aria-label="Contact" title="Contact">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+    </a>
+    <div class="dock-divider"></div>
+    <button class="dock-icon theme-toggle" aria-label="Toggle theme" title="Toggle theme">
+      <svg class="theme-icon theme-icon-light" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg class="theme-icon theme-icon-dark" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </nav>
+    <div id="page">
       <main id="home">
         <section class="hero">
           <div class="hero__card glass" data-reveal data-tilt>
             <div class="badge glass subtle">
               <img src="assets/main.svg" alt="Badge" width="18" height="18" />
-              <span>Omni </span>
+              <span>Sarthak </span>
             </div>
             <h1 class="title">
-               Crafting calm, delightful, and fast web experiences.
+               I build useful, real-world apps — fast.
              </h1>
             <p class="sub">
-              <span id="intro" class="typing" data-text="I’m Sarthak — a developer who loves clean interfaces, smooth motion, and human‑friendly design." aria-live="polite"></span>
+              <span id="intro" class="typing" data-text="I'm Sarthak, a student developer who loves solving problems by making products. From AI-powered nutrition scanning to browser extensions, I build tools that help people in their everyday life." aria-live="polite"></span>
             </p>
             <div class="cta">
               <a class="btn primary" href="#work">View Work</a>
@@ -73,22 +80,30 @@
             <article class="card glass" data-reveal data-tilt>
               <h3>Principles</h3>
               <p>
-                Accessibility first, performance as a feature, and details that
-                feel invisible. The result: interfaces that simply feel right.
+                • Ship fast, improve continuously<br>
+                • Make things people can actually use<br>
+                • Keep code simple and maintainable<br>
+                • Learn by building, not overthinking
               </p>
             </article>
             <article class="card glass" data-reveal data-tilt>
               <h3>Focus</h3>
               <p>
-                Frontend engineering, design systems, animations, and turning
-                ideas into production‑ready experiences.
+                • Building real products end-to-end<br>
+                • AI-powered tools<br>
+                • Mobile & web apps<br>
+                • Practical UX that anyone can use instantly
               </p>
             </article>
             <article class="card glass" data-reveal data-tilt>
               <h3>Stack</h3>
               <p>
-                HTML, CSS, JavaScript — with care for semantics, progressive
-                enhancement, and maintainability.
+                • HTML, CSS, JavaScript<br>
+                • Python, Flask, REST APIs<br>
+                • Kotlin (Android), Swift (iOS)<br>
+                • C & C++ (systems + low-level fundamentals)<br>
+                • GitHub Pages, Tailwind, debugging anything<br>
+                • Basically: whatever helps me ship the product 🚀
               </p>
             </article>
           </div>
@@ -99,19 +114,13 @@
             <a class="work__item glass" href="https://syrthax.github.io/NutriScan/" aria-label="NutriScan" data-reveal data-tilt>
               <div class="work__meta">
                 <h4>NutriScan</h4>
-                <p>Scans barcodes of food items and provides nutritional values using OpenFoodAPI</p>
+                <p>Scans barcodes of food items and provides nutritional values using OpenFoodAPI (beta v0.5)</p>
               </div>
             </a>
             <a class="work__item glass" href="https://syrthax.github.io/soura/" aria-label="Soura" data-reveal data-tilt>
               <div class="work__meta">
                 <h4>Soura</h4>
-                <p>Chrome extension for enhanced downloading assets (prototype stage)</p>
-              </div>
-            </a>
-            <a class="work__item glass" href="#" aria-label="Project 3" data-reveal data-tilt>
-              <div class="work__meta">
-                <h4>Omni</h4>
-                <p>High‑performance Profile UI. (final stage)</p>
+                <p>Chrome extension for enhanced downloading assets (v1.0)</p>
               </div>
             </a>
           </div>
