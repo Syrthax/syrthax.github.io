@@ -351,6 +351,32 @@ html, body {
   opacity: 0;
   transform: translate(-50%, -50%) rotate(-180deg);
 }
+.view-toggle {
+  position: relative;
+}
+.view-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s, transform 0.3s;
+}
+.view-icon-2d {
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+.view-icon-3d {
+  opacity: 1;
+  transform: translate(-50%, -50%) rotate(0deg);
+}
+html:not(.is-3d) .view-icon-2d {
+  opacity: 1;
+  transform: translate(-50%, -50%) rotate(0deg);
+}
+html:not(.is-3d) .view-icon-3d {
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(-90deg);
+}
 .hero__card,
 .card,
 .work__item,

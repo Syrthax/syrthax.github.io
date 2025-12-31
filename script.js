@@ -52,6 +52,50 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').match
   }, { passive: true });
 })();
 
+// 3D View Toggle
+(() => {
+  const viewToggle = document.querySelector('.view-toggle');
+  const html = document.documentElement;
+  const is3DCapable = html.getAttribute('data-3d-capable') === 'true';
+  
+  // Show toggle to everyone (let users decide)
+  if (viewToggle) {
+    viewToggle.style.display = 'flex';
+    
+    // Toggle 3D view on button click
+    viewToggle.addEventListener('click', () => {
+      const is3DEnabled = html.classList.contains('is-3d');
+      
+      // Warn if enabling 3D without WebGL
+      if (!is3DEnabled && !is3DCapable) {
+        alert('3D view requires WebGL support. Your browser may not support this feature.');
+        return;
+      }
+      
+      if (is3DEnabled) {
+        // Disable 3D
+        html.classList.remove('is-3d');
+        html.classList.remove('scene-loaded');
+        localStorage.setItem('prefer3D', 'false');
+        
+        // Reset body styles that 3D mode may have changed
+        document.body.style.overflow = '';
+        document.body.style.height = '';
+        
+        // Reload page to clean up 3D scene
+        setTimeout(() => location.reload(), 100);
+      } else {
+        // Enable 3D
+        html.classList.add('is-3d');
+        localStorage.setItem('prefer3D', 'true');
+        
+        // Reload page to load 3D scene
+        setTimeout(() => location.reload(), 100);
+      }
+    });
+  }
+})();
+
 // Theme Toggle
 (() => {
   const themeToggle = document.querySelector('.theme-toggle');

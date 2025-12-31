@@ -1,0 +1,402 @@
+/* 3D Scene Styles - Only active on .is-3d */
+
+.scene-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 1;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+/* Only show on capable devices */
+html.is-3d .scene-container {
+  display: block;
+}
+
+/* Fade in after scene loads */
+html.is-3d.scene-loaded .scene-container {
+  opacity: 1;
+}
+
+#scene {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Hide default page in 3D narrative mode */
+html.is-3d #page {
+  display: none;
+}
+
+html.is-3d #bg {
+  display: none;
+}
+
+html.is-3d #loader {
+  display: none;
+}
+
+/* Dock stays above everything */
+html.is-3d .dock {
+  z-index: 99999;
+}
+
+/* Hide theme toggle in 3D mode - dark theme is fixed */
+html.is-3d .theme-toggle {
+  display: none;
+}
+
+/* ========================================
+   STAGE CONTENT - Builder Aesthetic
+   No glass, no blur - wooden/tactile feel
+======================================== */
+
+.stage-content {
+  display: none;
+  position: fixed;
+  z-index: 10;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+html.is-3d .stage-content {
+  display: block;
+}
+
+.stage-content.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* Position stages to avoid hammer overlap */
+#stage-intro {
+  top: 50%;
+  left: 8%;
+  transform: translateY(-50%);
+}
+
+#stage-intro.visible {
+  transform: translateY(-50%);
+}
+
+/* Projects: Camera looks at hammer FACE (top), so card goes lower-right */
+#stage-projects {
+  top: 60%;
+  right: 6%;
+  left: auto;
+  transform: translateY(-50%);
+}
+
+#stage-projects.visible {
+  transform: translateY(-50%);
+}
+
+/* Skills: Camera looks at GRIP (bottom), so card goes upper area */
+#stage-skills {
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+#stage-skills.visible {
+  transform: translateX(-50%);
+}
+
+/* ========================================
+   BUILDER CARDS - Wooden/Craftsman Feel
+   Matte surfaces, soft shadows, warm tones
+======================================== */
+
+.builder-card {
+  background: linear-gradient(145deg, #1a1816 0%, #0f0e0d 100%);
+  border: 1px solid #3d3730;
+  border-radius: 12px;
+  padding: 2rem 2.5rem;
+  color: #f5efe6;
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 245, 230, 0.05);
+  max-width: 380px;
+}
+
+.builder-card h1 {
+  font-size: 2.2rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  color: #fff8f0;
+  letter-spacing: -0.02em;
+}
+
+.builder-card h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 1.2rem 0;
+  color: #fff8f0;
+  letter-spacing: -0.01em;
+}
+
+.builder-card p {
+  font-size: 1rem;
+  color: #b8a99a;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.scroll-hint {
+  display: block;
+  margin-top: 1.5rem;
+  font-size: 0.85rem;
+  color: #7a6f63;
+  opacity: 0.8;
+}
+
+/* ========================================
+   PROJECT LIST - Clean, tactile links
+======================================== */
+
+.project-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.project-link {
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 248, 240, 0.03);
+  border: 1px solid rgba(255, 248, 240, 0.08);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.project-link:hover {
+  background: rgba(255, 248, 240, 0.08);
+  border-color: rgba(255, 248, 240, 0.15);
+  transform: translateX(4px);
+}
+
+.project-name {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #fff8f0;
+}
+
+.project-desc {
+  font-size: 0.8rem;
+  color: #8a7d70;
+  margin-top: 0.2rem;
+}
+
+/* ========================================
+   SKILLS - Tag style with builder feel
+======================================== */
+
+.skills-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+}
+
+.skill-tag {
+  padding: 0.4rem 0.9rem;
+  background: rgba(255, 248, 240, 0.06);
+  border: 1px solid rgba(255, 248, 240, 0.12);
+  border-radius: 20px;
+  font-size: 0.85rem;
+  color: #c4b5a5;
+}
+
+.contact-cta {
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 248, 240, 0.1);
+}
+
+.contact-cta p {
+  margin-bottom: 1rem;
+}
+
+.builder-btn {
+  display: inline-block;
+  padding: 0.7rem 1.4rem;
+  background: linear-gradient(145deg, #2a2520 0%, #1a1816 100%);
+  border: 1px solid #4a433a;
+  border-radius: 8px;
+  color: #fff8f0;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.builder-btn:hover {
+  background: linear-gradient(145deg, #3a3530 0%, #2a2520 100%);
+  border-color: #5a534a;
+  transform: translateY(-2px);
+}
+
+/* ========================================
+   STAGE INDICATORS - Minimal dots
+======================================== */
+
+.stage-indicators {
+  display: none;
+  position: fixed;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+  flex-direction: column;
+  gap: 12px;
+}
+
+html.is-3d .stage-indicators {
+  display: flex;
+}
+
+.stage-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 248, 240, 0.2);
+  border: 1px solid rgba(255, 248, 240, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.stage-indicator:hover {
+  background: rgba(255, 248, 240, 0.4);
+}
+
+.stage-indicator.active {
+  background: #fff8f0;
+  border-color: #fff8f0;
+  transform: scale(1.2);
+}
+
+/* ========================================
+   CRAFTSMAN SECTION - Builder Mindset
+======================================== */
+
+.craftsman-section {
+  margin-bottom: 1.2rem;
+}
+
+.craftsman-label {
+  font-size: 1.02rem;
+  font-weight: 500;
+  color: #e2c7a2;
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.01em;
+  font-family: inherit;
+}
+
+.craftsman-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.7rem;
+  margin: 0 0 0.5rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.craftsman-tag {
+  background: linear-gradient(120deg, #2d2216 60%, #3a2a1a 100%);
+  color: #e7d2b7;
+  border: 1.5px solid #5a4632;
+  border-radius: 18px;
+  font-size: 0.98rem;
+  font-family: inherit;
+  padding: 0.45em 1.1em;
+  box-shadow: 0 1px 4px rgba(60,40,10,0.08);
+  letter-spacing: 0.01em;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.craftsman-tag:hover {
+  background: linear-gradient(120deg, #3a2a1a 60%, #2d2216 100%);
+}
+
+.craftsman-section.philosophy {
+  margin-bottom: 1.5rem;
+  border-top: 1px solid rgba(255, 248, 240, 0.08);
+  padding-top: 1rem;
+}
+
+.craftsman-philosophy {
+  margin: 0;
+  padding: 0 0 0 1.1em;
+  color: #cbb89e;
+  font-size: 1.01rem;
+  line-height: 1.6;
+  list-style: none;
+}
+
+.craftsman-philosophy li {
+  margin-bottom: 0.3em;
+  position: relative;
+}
+
+.craftsman-philosophy li:before {
+  content: "";
+  display: inline-block;
+  width: 0.5em;
+  height: 0.5em;
+  background: #bfa06a;
+  border-radius: 50%;
+  margin-right: 0.7em;
+  vertical-align: middle;
+  opacity: 0.5;
+}
+
+.icon-hammer {
+  font-size: 1.1em;
+  margin-right: 0.3em;
+  vertical-align: -0.1em;
+}
+
+/* ========================================
+   RESPONSIVE - Adjust card positions
+======================================== */
+
+@media (max-width: 1200px) {
+  #stage-intro,
+  #stage-projects {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%) translateY(-50%);
+  }
+  
+  #stage-intro.visible,
+  #stage-projects.visible {
+    transform: translateX(-50%) translateY(-50%);
+  }
+}
+
+@media (max-width: 600px) {
+  .builder-card {
+    padding: 1.5rem;
+    max-width: 90vw;
+  }
+  
+  .builder-card h1 {
+    font-size: 1.8rem;
+  }
+  
+  .stage-indicators {
+    right: 12px;
+  }
+}
