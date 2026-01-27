@@ -162,52 +162,85 @@ class HammerNarrative {
   loadHammer() {
     const loader = new GLTFLoader();
     
-    loader.load('./assets/hammer.glb', (gltf) => {
-      this.hammer = gltf.scene;
-      
-      // Center and scale
-      const box = new THREE.Box3().setFromObject(this.hammer);
-      const center = box.getCenter(new THREE.Vector3());
-      const size = box.getSize(new THREE.Vector3());
-      
-      const maxDim = Math.max(size.x, size.y, size.z);
-      const scale = 4 / maxDim;
-      this.hammer.scale.setScalar(scale);
-      
-      // Center the hammer at origin
-      this.hammer.position.set(
-        -center.x * scale,
-        -center.y * scale,
-        -center.z * scale
-      );
-      
-      // Store the hammer's bounding info
-      this.hammerHeight = size.y * scale;
-      
-      // Apply initial stage pose
-      const stage = this.stages[0];
-      const part = this.hammerParts[stage.part];
-      
-      this.hammer.rotation.x = stage.hammerRotX;
-      this.hammer.rotation.y = stage.hammerRotY;
-      
-      // Set initial camera position and lookAt
-      this.camera.position.z = part.distance;
-      this.currentLookAt.set(0, part.y, 0);
-      this.camera.lookAt(this.currentLookAt);
-      
-      // Store base rotations for idle animation
-      this.baseRotX = stage.hammerRotX;
-      this.baseRotY = stage.hammerRotY;
-      
-      this.scene.add(this.hammer);
-      
-      // Signal ready
-      document.documentElement.classList.add('scene-loaded');
-      this.showStageContent(0);
-      
-      this.animate();
-    });
+    // Get loading UI elements
+    const modelLoader = document.getElementById('model-loader');
+    const progressBar = document.getElementById('model-progress');
+    const percentText = document.getElementById('model-percent');
+    
+    loader.load(
+      './assets/hammer.glb',
+      // onLoad callback
+      (gltf) => {
+        this.hammer = gltf.scene;
+        
+        // Center and scale
+        const box = new THREE.Box3().setFromObject(this.hammer);
+        const center = box.getCenter(new THREE.Vector3());
+        const size = box.getSize(new THREE.Vector3());
+        
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const scale = 4 / maxDim;
+        this.hammer.scale.setScalar(scale);
+        
+        // Center the hammer at origin
+        this.hammer.position.set(
+          -center.x * scale,
+          -center.y * scale,
+          -center.z * scale
+        );
+        
+        // Store the hammer's bounding info
+        this.hammerHeight = size.y * scale;
+        
+        // Apply initial stage pose
+        const stage = this.stages[0];
+        const part = this.hammerParts[stage.part];
+        
+        this.hammer.rotation.x = stage.hammerRotX;
+        this.hammer.rotation.y = stage.hammerRotY;
+        
+        // Set initial camera position and lookAt
+        this.camera.position.z = part.distance;
+        this.currentLookAt.set(0, part.y, 0);
+        this.camera.lookAt(this.currentLookAt);
+        
+        // Store base rotations for idle animation
+        this.baseRotX = stage.hammerRotX;
+        this.baseRotY = stage.hammerRotY;
+        
+        this.scene.add(this.hammer);
+        
+        // Hide loading UI
+        if (modelLoader) {
+          modelLoader.classList.add('loaded');
+        }
+        
+        // Signal ready
+        document.documentElement.classList.add('scene-loaded');
+        this.showStageContent(0);
+        
+        this.animate();
+      },
+      // onProgress callback
+      (xhr) => {
+        if (xhr.lengthComputable) {
+          const percent = Math.round((xhr.loaded / xhr.total) * 100);
+          if (progressBar) progressBar.style.width = percent + '%';
+          if (percentText) percentText.textContent = percent + '%';
+        } else {
+          // If total size unknown, show indeterminate progress
+          if (progressBar) progressBar.style.width = '50%';
+          if (percentText) percentText.textContent = 'Loading...';
+        }
+      },
+      // onError callback
+      (error) => {
+        console.error('Error loading 3D model:', error);
+        if (percentText) percentText.textContent = 'Error loading model';
+        // Fallback to 2D mode
+        document.documentElement.classList.remove('is-3d');
+      }
+    );
   }
 
   setupScrollCapture() {
