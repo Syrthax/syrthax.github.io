@@ -19,37 +19,116 @@ const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').match
   });
 })();
 
-// Dock auto-hide on scroll
+// Dock auto-hide behavior - different for 2D and 3D modes
 (() => {
   const dock = document.querySelector('.dock');
+  const html = document.documentElement;
   if (!dock) return;
   
-  let lastScrollY = window.scrollY;
-  let ticking = false;
+  // Check if we're in 3D mode
+  const is3DMode = () => html.classList.contains('is-3d');
   
-  const updateDock = () => {
-    const currentScrollY = window.scrollY;
-    const scrollDelta = currentScrollY - lastScrollY;
+  // ========================================
+  // 2D MODE: Scroll-based dock hide/show
+  // ========================================
+  if (!is3DMode()) {
+    let lastScrollY = window.scrollY;
+    let ticking = false;
     
-    // Hide dock when scrolling down fast (more than 5px)
-    if (scrollDelta > 5 && currentScrollY > 100) {
+    const updateDock = () => {
+      const currentScrollY = window.scrollY;
+      const scrollDelta = currentScrollY - lastScrollY;
+      
+      // Hide dock when scrolling down fast (more than 5px)
+      if (scrollDelta > 5 && currentScrollY > 100) {
+        dock.classList.add('dock-hidden');
+      } 
+      // Show dock when scrolling up or near top
+      else if (scrollDelta < 0 || currentScrollY < 100) {
+        dock.classList.remove('dock-hidden');
+      }
+      
+      lastScrollY = currentScrollY;
+      ticking = false;
+    };
+    
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(updateDock);
+        ticking = true;
+      }
+    }, { passive: true });
+    
+    return; // Exit early for 2D mode
+  }
+  
+  // ========================================
+  // 3D MODE: Hover-based dock hide/show
+  // ========================================
+  let hoverTimeout = null;
+  let isHovering = false;
+  
+  // Hide dock after 1.2 seconds on initial load (3D mode only)
+  setTimeout(() => {
+    if (is3DMode()) {
       dock.classList.add('dock-hidden');
-    } 
-    // Show dock when scrolling up or near top
-    else if (scrollDelta < 0 || currentScrollY < 100) {
-      dock.classList.remove('dock-hidden');
     }
+  }, 1200);
+  
+  // Detect mouse in bottom 15% of viewport
+  const handleMouseMove = (e) => {
+    if (!is3DMode()) return;
     
-    lastScrollY = currentScrollY;
-    ticking = false;
+    const viewportHeight = window.innerHeight;
+    const bottomThreshold = viewportHeight * 0.85; // Top of bottom 15%
+    
+    if (e.clientY >= bottomThreshold) {
+      // Mouse is in bottom 15%
+      if (!isHovering) {
+        isHovering = true;
+        // Start 1.5 second timer to show dock
+        hoverTimeout = setTimeout(() => {
+          dock.classList.remove('dock-hidden');
+        }, 1500);
+      }
+    } else {
+      // Mouse left bottom 15%
+      if (isHovering) {
+        isHovering = false;
+        // Cancel timer if still waiting
+        if (hoverTimeout) {
+          clearTimeout(hoverTimeout);
+          hoverTimeout = null;
+        }
+        // Hide dock again when mouse leaves bottom area
+        dock.classList.add('dock-hidden');
+      }
+    }
   };
   
-  window.addEventListener('scroll', () => {
-    if (!ticking) {
-      requestAnimationFrame(updateDock);
-      ticking = true;
+  // Keep dock visible while hovering directly on it
+  dock.addEventListener('mouseenter', () => {
+    if (!is3DMode()) return;
+    if (hoverTimeout) {
+      clearTimeout(hoverTimeout);
+      hoverTimeout = null;
     }
-  }, { passive: true });
+    dock.classList.remove('dock-hidden');
+  });
+  
+  dock.addEventListener('mouseleave', (e) => {
+    if (!is3DMode()) return;
+    const viewportHeight = window.innerHeight;
+    const bottomThreshold = viewportHeight * 0.85;
+    
+    // Only hide if mouse is not still in bottom 15%
+    if (e.clientY < bottomThreshold) {
+      dock.classList.add('dock-hidden');
+      isHovering = false;
+    }
+  });
+  
+  document.addEventListener('mousemove', handleMouseMove, { passive: true });
 })();
 
 // 3D View Toggle
