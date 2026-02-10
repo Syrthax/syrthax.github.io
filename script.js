@@ -1,177 +1,250 @@
 document.getElementById('year').textContent = new Date().getFullYear();
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// Loading Animation
+// Loading - hide loader immediately (no zoom animation)
 (() => {
   const loader = document.getElementById('loader');
-  if (!loader || reduceMotion) {
-    if (loader) loader.style.display = 'none';
-    return;
+  if (!loader) return;
+  loader.style.display = 'none';
+})();
+
+// ============================================================
+// Device Detection
+// Runs once at boot — frozen, immutable reference
+// ============================================================
+const Device = (() => {
+  const isMobile =
+    window.innerWidth < 1024 ||
+    'ontouchstart' in window ||
+    navigator.maxTouchPoints > 0;
+  const is3DCapable =
+    document.documentElement.getAttribute('data-3d-capable') === 'true';
+  return Object.freeze({ isMobile, isDesktop: !isMobile, is3DCapable });
+})();
+
+// ============================================================
+// Toast Notification System
+// iOS-style spring animation — top-center, scale + translate
+// ============================================================
+const Toast = (() => {
+  const DISPLAY_DURATION_MS = 4000;  // how long the toast stays visible
+  const ENTRY_MS            = 550;   // entry animation length
+  const EXIT_MS             = 400;   // exit animation length
+
+  let activeToast = null;
+
+  /** Build the DOM element for a toast. */
+  function createElement(message) {
+    const el = document.createElement('div');
+    el.className = 'toast-notification';
+    el.setAttribute('role', 'status');
+    el.setAttribute('aria-live', 'polite');
+
+    const text = document.createElement('span');
+    text.className = 'toast-text';
+    text.textContent = message;
+    el.appendChild(text);
+    return el;
   }
-  
-  window.addEventListener('load', () => {
-    setTimeout(() => {
-      loader.classList.add('loaded');
+
+  /** Animate a toast out and remove it from the DOM. */
+  function dismiss(el) {
+    if (!el || !el.parentNode) return Promise.resolve();
+    return new Promise((resolve) => {
+      el.classList.remove('toast-enter');
+      el.classList.add('toast-exit');
       setTimeout(() => {
-        loader.style.display = 'none';
-      }, 600);
-    }, 1200);
+        el.remove();
+        if (activeToast === el) activeToast = null;
+        resolve();
+      }, EXIT_MS);
+    });
+  }
+
+  /**
+   * Show a toast with the given message.
+   * Returns a Promise that resolves after the toast is fully dismissed.
+   * @param {string}  message
+   * @param {number}  duration  — visible time in ms (default 4 000)
+   */
+  function show(message, duration = DISPLAY_DURATION_MS) {
+    // Remove any existing toast instantly so only one is on-screen
+    if (activeToast) {
+      clearTimeout(activeToast._timer);
+      activeToast.remove();
+      activeToast = null;
+    }
+
+    return new Promise((resolve) => {
+      const el = createElement(message);
+      activeToast = el;
+      document.body.appendChild(el);
+
+      // Force a layout calc so the browser registers the initial transform
+      // before the entry class is added on the next frame.
+      el.getBoundingClientRect();
+
+      // Trigger spring entry animation
+      requestAnimationFrame(() => el.classList.add('toast-enter'));
+
+      // Auto-dismiss after entry + visible duration
+      el._timer = setTimeout(() => dismiss(el).then(resolve), ENTRY_MS + duration);
+    });
+  }
+
+  /** Immediately tear down any active toast. */
+  function dismissAll() {
+    if (activeToast) {
+      clearTimeout(activeToast._timer);
+      dismiss(activeToast);
+    }
+  }
+
+  return Object.freeze({ show, dismissAll });
+})();
+
+// ============================================================
+// View State Manager
+// Owns the is-3d class and localStorage preference
+// ============================================================
+const ViewState = (() => {
+  const html = document.documentElement;
+
+  const is3D = () => html.classList.contains('is-3d');
+
+  /** Toggle between normal and 3D views (desktop only). */
+  function toggle() {
+    if (Device.isMobile || !Device.is3DCapable) return;
+
+    const entering3D = !is3D();
+
+    if (entering3D) {
+      html.classList.add('is-3d');
+      localStorage.setItem('prefer3D', 'true');
+    } else {
+      html.classList.remove('is-3d');
+      html.classList.remove('scene-loaded');
+      localStorage.setItem('prefer3D', 'false');
+      document.body.style.overflow = '';
+      document.body.style.height = '';
+    }
+
+    // Flag so the post-reload toast fires in the new view
+    localStorage.setItem('viewJustSwitched', 'true');
+    location.reload();
+  }
+
+  return Object.freeze({ is3D, toggle });
+})();
+
+// ============================================================
+// Keyboard Controller — double-space to toggle views (desktop)
+// Rejects held-down key repeats for a true double-press.
+// ============================================================
+(() => {
+  if (Device.isMobile) return;
+
+  let lastSpaceTime = 0;
+  const DOUBLE_PRESS_WINDOW_MS = 400; // max gap between two presses
+
+  document.addEventListener('keydown', (e) => {
+    // Don't hijack form fields
+    const tag = e.target.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable) return;
+    if (e.code !== 'Space') return;
+    if (e.repeat) return; // ignore OS key-repeat
+
+    e.preventDefault();
+
+    const now = Date.now();
+    if (now - lastSpaceTime <= DOUBLE_PRESS_WINDOW_MS) {
+      lastSpaceTime = 0; // reset to prevent triple-fire
+      ViewState.toggle();
+    } else {
+      lastSpaceTime = now;
+    }
   });
 })();
 
-// Dock auto-hide behavior - different for 2D and 3D modes
+// ============================================================
+// Dock — scroll-based auto-hide (2D / normal mode only)
+// In 3D mode the dock is hidden entirely via CSS.
+// ============================================================
 (() => {
   const dock = document.querySelector('.dock');
-  const html = document.documentElement;
   if (!dock) return;
-  
-  // Check if we're in 3D mode
-  const is3DMode = () => html.classList.contains('is-3d');
-  
-  // ========================================
-  // 2D MODE: Scroll-based dock hide/show
-  // ========================================
-  if (!is3DMode()) {
-    let lastScrollY = window.scrollY;
-    let ticking = false;
-    
-    const updateDock = () => {
-      const currentScrollY = window.scrollY;
-      const scrollDelta = currentScrollY - lastScrollY;
-      
-      // Hide dock when scrolling down fast (more than 5px)
-      if (scrollDelta > 5 && currentScrollY > 100) {
-        dock.classList.add('dock-hidden');
-      } 
-      // Show dock when scrolling up or near top
-      else if (scrollDelta < 0 || currentScrollY < 100) {
-        dock.classList.remove('dock-hidden');
-      }
-      
-      lastScrollY = currentScrollY;
-      ticking = false;
-    };
-    
-    window.addEventListener('scroll', () => {
-      if (!ticking) {
-        requestAnimationFrame(updateDock);
-        ticking = true;
-      }
-    }, { passive: true });
-    
-    return; // Exit early for 2D mode
-  }
-  
-  // ========================================
-  // 3D MODE: Hover-based dock hide/show
-  // ========================================
-  let hoverTimeout = null;
-  let isHovering = false;
-  
-  // Hide dock after 1.2 seconds on initial load (3D mode only)
-  setTimeout(() => {
-    if (is3DMode()) {
+  if (ViewState.is3D()) return;
+
+  let lastScrollY = window.scrollY;
+  let ticking = false;
+
+  const update = () => {
+    const y = window.scrollY;
+    const delta = y - lastScrollY;
+
+    if (delta > 5 && y > 100) {
       dock.classList.add('dock-hidden');
+    } else if (delta < 0 || y < 100) {
+      dock.classList.remove('dock-hidden');
     }
-  }, 1200);
-  
-  // Detect mouse in bottom 15% of viewport
-  const handleMouseMove = (e) => {
-    if (!is3DMode()) return;
-    
-    const viewportHeight = window.innerHeight;
-    const bottomThreshold = viewportHeight * 0.85; // Top of bottom 15%
-    
-    if (e.clientY >= bottomThreshold) {
-      // Mouse is in bottom 15%
-      if (!isHovering) {
-        isHovering = true;
-        // Start 1.5 second timer to show dock
-        hoverTimeout = setTimeout(() => {
-          dock.classList.remove('dock-hidden');
-        }, 1500);
-      }
-    } else {
-      // Mouse left bottom 15%
-      if (isHovering) {
-        isHovering = false;
-        // Cancel timer if still waiting
-        if (hoverTimeout) {
-          clearTimeout(hoverTimeout);
-          hoverTimeout = null;
-        }
-        // Hide dock again when mouse leaves bottom area
-        dock.classList.add('dock-hidden');
-      }
-    }
+
+    lastScrollY = y;
+    ticking = false;
   };
-  
-  // Keep dock visible while hovering directly on it
-  dock.addEventListener('mouseenter', () => {
-    if (!is3DMode()) return;
-    if (hoverTimeout) {
-      clearTimeout(hoverTimeout);
-      hoverTimeout = null;
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(update);
+      ticking = true;
     }
-    dock.classList.remove('dock-hidden');
-  });
-  
-  dock.addEventListener('mouseleave', (e) => {
-    if (!is3DMode()) return;
-    const viewportHeight = window.innerHeight;
-    const bottomThreshold = viewportHeight * 0.85;
-    
-    // Only hide if mouse is not still in bottom 15%
-    if (e.clientY < bottomThreshold) {
-      dock.classList.add('dock-hidden');
-      isHovering = false;
-    }
-  });
-  
-  document.addEventListener('mousemove', handleMouseMove, { passive: true });
+  }, { passive: true });
 })();
 
-// 3D View Toggle
+// ============================================================
+// Initial Toast — device-aware, shown once per session
+// Also re-shown on every view switch (via localStorage flag).
+// ============================================================
 (() => {
-  const viewToggle = document.querySelector('.view-toggle');
-  const html = document.documentElement;
-  const is3DCapable = html.getAttribute('data-3d-capable') === 'true';
-  
-  // Show toggle to everyone (let users decide)
-  if (viewToggle) {
-    viewToggle.style.display = 'flex';
-    
-    // Toggle 3D view on button click
-    viewToggle.addEventListener('click', () => {
-      const is3DEnabled = html.classList.contains('is-3d');
-      
-      // Warn if enabling 3D without WebGL
-      if (!is3DEnabled && !is3DCapable) {
-        alert('3D view requires WebGL support. Your browser may not support this feature.');
-        return;
-      }
-      
-      if (is3DEnabled) {
-        // Disable 3D
-        html.classList.remove('is-3d');
-        html.classList.remove('scene-loaded');
-        localStorage.setItem('prefer3D', 'false');
-        
-        // Reset body styles that 3D mode may have changed
-        document.body.style.overflow = '';
-        document.body.style.height = '';
-        
-        // Reload page to clean up 3D scene
-        setTimeout(() => location.reload(), 100);
-      } else {
-        // Enable 3D
-        html.classList.add('is-3d');
-        localStorage.setItem('prefer3D', 'true');
-        
-        // Reload page to load 3D scene
-        setTimeout(() => location.reload(), 100);
-      }
-    });
+  const TOAST_VISIBLE_MS = 4500;
+  const LOAD_DELAY_MS    = 1200; // let the user orient first
+
+  // ---- Mobile path ----
+  if (Device.isMobile) {
+    if (sessionStorage.getItem('toastShown')) return;
+    sessionStorage.setItem('toastShown', 'true');
+
+    window.addEventListener('load', () => {
+      setTimeout(
+        () => Toast.show('Visit this page on a PC for the 3D experience', TOAST_VISIBLE_MS),
+        LOAD_DELAY_MS
+      );
+    }, { once: true });
+    return;
+  }
+
+  // ---- Desktop path ----
+  const justSwitched = localStorage.getItem('viewJustSwitched');
+
+  if (justSwitched) {
+    // Always show after a view switch so the user knows how to switch back
+    localStorage.removeItem('viewJustSwitched');
+    window.addEventListener('load', () => {
+      setTimeout(
+        () => Toast.show('Double-click the space bar to switch views', TOAST_VISIBLE_MS),
+        LOAD_DELAY_MS
+      );
+    }, { once: true });
+  } else {
+    // First visit this session
+    if (sessionStorage.getItem('toastShown')) return;
+    sessionStorage.setItem('toastShown', 'true');
+
+    window.addEventListener('load', () => {
+      setTimeout(
+        () => Toast.show('Double-click the space bar to switch views', TOAST_VISIBLE_MS),
+        LOAD_DELAY_MS
+      );
+    }, { once: true });
   }
 })();
 

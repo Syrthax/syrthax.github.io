@@ -351,32 +351,7 @@ html, body {
   opacity: 0;
   transform: translate(-50%, -50%) rotate(-180deg);
 }
-.view-toggle {
-  position: relative;
-}
-.view-icon {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  transition: opacity 0.3s, transform 0.3s;
-}
-.view-icon-2d {
-  opacity: 0;
-  transform: translate(-50%, -50%) rotate(90deg);
-}
-.view-icon-3d {
-  opacity: 1;
-  transform: translate(-50%, -50%) rotate(0deg);
-}
-html:not(.is-3d) .view-icon-2d {
-  opacity: 1;
-  transform: translate(-50%, -50%) rotate(0deg);
-}
-html:not(.is-3d) .view-icon-3d {
-  opacity: 0;
-  transform: translate(-50%, -50%) rotate(-90deg);
-}
+/* View toggle removed - using double-space shortcut */
 .hero__card,
 .card,
 .work__item,
@@ -400,5 +375,82 @@ html:not(.is-3d) .view-icon-3d {
 /* Respect reduced-motion for caret */
 @media (prefers-reduced-motion: reduce){
   .typing::after { animation: none; opacity: 1; }
+}
 
+/* ========================================
+   TOAST NOTIFICATIONS — iOS-style top banner
+   Enters from top center via scale + translateY
+   with a spring-overshoot cubic-bezier.
+======================================== */
+.toast-notification {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  /* Initial state: above viewport + scaled down — hidden without opacity hacks */
+  transform: translateX(-50%) translateY(calc(-100% - 48px)) scale(0.85);
+  background: rgba(30, 30, 30, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 8px 40px rgba(0, 0, 0, 0.35),
+    0 2px 6px rgba(0, 0, 0, 0.2);
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
+  backdrop-filter: saturate(180%) blur(24px);
+  color: #f0f0f0;
+  padding: 14px 28px;
+  border-radius: 16px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  z-index: 2147483647;
+  pointer-events: none;
+  white-space: nowrap;
+  -webkit-user-select: none;
+  user-select: none;
+  will-change: transform;
+  /* No transition by default — classes control timing */
+}
+.toast-text {
+  pointer-events: none;
+}
+
+/*
+ * ENTRY — slide down + scale up
+ * cubic-bezier(0.34, 1.56, 0.64, 1) overshoots ~56% then settles,
+ * producing the elastic / spring feel of iOS notification banners.
+ * 550 ms is long enough to read as intentional motion.
+ */
+.toast-notification.toast-enter {
+  transform: translateX(-50%) translateY(0) scale(1);
+  transition: transform 550ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/*
+ * EXIT — slide up + scale down (reverse of entry)
+ * cubic-bezier(0.55, 0, 1, 0.45) accelerates away quickly.
+ * 400 ms keeps the departure snappy.
+ */
+.toast-notification.toast-exit {
+  transform: translateX(-50%) translateY(calc(-100% - 48px)) scale(0.85);
+  transition: transform 400ms cubic-bezier(0.55, 0, 1, 0.45);
+}
+
+/* Light theme variant */
+[data-theme="light"] .toast-notification {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow:
+    0 8px 40px rgba(0, 0, 0, 0.1),
+    0 2px 6px rgba(0, 0, 0, 0.06);
+  color: #1a1a1a;
+}
+
+/* Responsive — let the toast wrap on narrow viewports */
+@media (max-width: 480px) {
+  .toast-notification {
+    max-width: calc(100vw - 32px);
+    white-space: normal;
+    text-align: center;
+    font-size: 0.85rem;
+    padding: 12px 20px;
+  }
 }
