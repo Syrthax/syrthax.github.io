@@ -626,6 +626,92 @@ export function LoadingTipsIllustration() {
     </IllustrationShell>
   );
 }
+export function KioskScholarIllustration() {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start 85%", "end 30%"] });
+
+  const pdfY = useTransform(scrollYProgress, [0, 1], [0, -28]);
+
+  const msg1Opacity = useTransform(scrollYProgress, [0.1, 0.3], [0, 1]);
+  const msg1Y = useTransform(scrollYProgress, [0.1, 0.3], [10, 0]);
+  const msg2Opacity = useTransform(scrollYProgress, [0.3, 0.52], [0, 1]);
+  const msg2Y = useTransform(scrollYProgress, [0.3, 0.52], [10, 0]);
+  const msg3Opacity = useTransform(scrollYProgress, [0.52, 0.74], [0, 1]);
+  const msg3Y = useTransform(scrollYProgress, [0.52, 0.74], [10, 0]);
+  const insightOpacity = useTransform(scrollYProgress, [0.74, 0.92], [0, 1]);
+  const insightY = useTransform(scrollYProgress, [0.74, 0.92], [8, 0]);
+
+  return (
+    <IllustrationShell className="mt-5 w-full max-w-xs">
+      <div
+        ref={ref}
+        className="overflow-hidden rounded-xl border border-violet-200/70 bg-white transition-colors duration-300 dark:border-violet-500/25 dark:bg-black"
+      >
+        {/* Window chrome */}
+        <div className="flex items-center gap-1.5 border-b border-violet-100 px-3 py-2 dark:border-violet-900/40">
+          <span className="h-2 w-2 rounded-full bg-red-400" />
+          <span className="h-2 w-2 rounded-full bg-amber-400" />
+          <span className="h-2 w-2 rounded-full bg-emerald-400" />
+          <div className="ml-2 h-2 w-24 rounded bg-violet-100 dark:bg-violet-900/30" />
+          <div className="ml-auto flex items-center gap-1">
+            <div className="h-1.5 w-1.5 rounded-full bg-violet-400/70 dark:bg-violet-500/60" />
+            <div className="h-1.5 w-6 rounded bg-violet-100 dark:bg-violet-900/30 text-[7px]" />
+          </div>
+        </div>
+
+        {/* Split: PDF viewer + Chat */}
+        <div className="flex h-32 gap-0">
+          {/* Left — mini PDF viewer */}
+          <div className="relative w-[46%] overflow-hidden border-r border-violet-100/60 bg-neutral-50 dark:border-violet-500/10 dark:bg-neutral-950">
+            <motion.div style={{ y: pdfY }} className="absolute inset-x-2 top-2 space-y-1.5">
+              <div className="h-1.5 w-full rounded bg-neutral-200 dark:bg-neutral-700" />
+              <div className="h-1.5 w-4/5 rounded bg-neutral-200 dark:bg-neutral-700" />
+              <div className="h-1.5 w-full rounded bg-neutral-200 dark:bg-neutral-700" />
+              <div className="h-1.5 w-3/4 rounded bg-neutral-100 dark:bg-neutral-800" />
+              <div className="h-1.5 w-full rounded bg-neutral-200 dark:bg-neutral-700" />
+              <div className="h-1.5 w-2/3 rounded bg-neutral-100 dark:bg-neutral-800" />
+              <div className="h-1.5 w-full rounded bg-neutral-200 dark:bg-neutral-700" />
+              <div className="h-1.5 w-5/6 rounded bg-neutral-100 dark:bg-neutral-800" />
+            </motion.div>
+            {/* Offline badge */}
+            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 rounded-full border border-emerald-300/60 bg-emerald-50 px-2 py-0.5 text-[8px] font-medium text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-950/50 dark:text-emerald-400">
+              offline
+            </div>
+          </div>
+
+          {/* Right — chat interface */}
+          <div className="flex flex-1 flex-col justify-end gap-1.5 overflow-hidden px-2 py-2">
+            <motion.div
+              style={{ opacity: msg1Opacity, y: msg1Y }}
+              className="self-end rounded-lg rounded-br-none border border-neutral-200/70 bg-neutral-100 px-2 py-1 text-[9px] text-neutral-600 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-400"
+            >
+              Summarise this
+            </motion.div>
+            <motion.div
+              style={{ opacity: msg2Opacity, y: msg2Y }}
+              className="self-start rounded-lg rounded-bl-none border border-violet-200/70 bg-violet-50 px-2 py-1 text-[9px] text-violet-700 dark:border-violet-500/25 dark:bg-violet-950/50 dark:text-violet-300"
+            >
+              Doc covers AI…
+            </motion.div>
+            <motion.div
+              style={{ opacity: msg3Opacity, y: msg3Y }}
+              className="self-end rounded-lg rounded-br-none border border-neutral-200/70 bg-neutral-100 px-2 py-1 text-[9px] text-neutral-600 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-400"
+            >
+              Key insights?
+            </motion.div>
+            <motion.div
+              style={{ opacity: insightOpacity, y: insightY }}
+              className="self-start rounded-lg rounded-bl-none border border-violet-200/70 bg-violet-50 px-2 py-1 text-[9px] text-violet-700 dark:border-violet-500/25 dark:bg-violet-950/50 dark:text-violet-300"
+            >
+              3 key findings ✦
+            </motion.div>
+          </div>
+        </div>
+      </div>
+    </IllustrationShell>
+  );
+}
+
 export function ARCraftIllustration() {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 85%", "end 30%"] });

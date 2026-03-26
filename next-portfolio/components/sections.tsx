@@ -10,6 +10,7 @@ import {
   HeroPdfAbstract,
   IDoTimelineIllustration,
   KioskIllustration,
+  KioskScholarIllustration,
   KioskTimelineIllustration,
   LoadingTipsIllustration,
   NetworkIllustration,
@@ -89,6 +90,7 @@ export function FeaturedFlagshipsSection() {
 
 export function ProjectsTimelineSection() {
   const projectIllustrations: Record<string, React.ReactNode> = {
+    "Kiosk Scholar": <KioskScholarIllustration />,
     "E-commerce Stall Website": <EcommerceIllustration />,
     "ARCraft": <ARCraftIllustration />,
     "Loading Tips": <LoadingTipsIllustration />,

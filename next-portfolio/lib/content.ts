@@ -8,6 +8,13 @@ export interface TimelineProject {
 
 export const timelineProjects: TimelineProject[] = [
   {
+    title: "Kiosk Scholar",
+    description:
+      "Local LLM-powered PDF tool that analyses documents, surfaces insights, and lets you chat with your PDFs — entirely offline.",
+    year: "Mar 2026",
+    link: "https://sarthakg.tech/Kiosk-Scholar"
+  },
+  {
     title: "E-commerce Stall Website",
     description: "Handled 50+ orders in a college stall using Cloudflare Workers.",
     year: "Feb 2026",
