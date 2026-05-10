@@ -64,7 +64,7 @@ export function FeaturedFlagshipsSection() {
             <li>Desktop and Android support</li>
           </ul>
           <a
-            href="https://sarthakg.tech/Kiosk/"
+            href="https://krisplabs.me/Kiosk/"
             target="_blank"
             rel="noreferrer"
             className="mt-6 inline-flex items-center gap-1 text-sm font-medium text-neutral-600 transition-colors hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
@@ -91,7 +91,7 @@ export function FeaturedFlagshipsSection() {
             <li>Minimal productivity workflow</li>
           </ul>
           <a
-            href="https://sarthakg.tech/ido/"
+            href="https://krisplabs.me/ido/"
             target="_blank"
             rel="noreferrer"
             className="mt-6 inline-flex items-center gap-1 text-sm font-medium text-neutral-600 transition-colors hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
@@ -272,8 +272,8 @@ export function ContactSection() {
   const links = [
     { label: "GitHub", href: "https://github.com/Syrthax" },
     { label: "LinkedIn", href: "https://www.linkedin.com/in/sarthak-g11/" },
-    { label: "Email", href: "https://contact.sarthakg.tech" },
-    { label: "Personal site", href: "https://sarthakg.tech" }
+    { label: "Email", href: "https://contact.sarthakg.com" },
+    { label: "Personal site", href: "https://sarthakg.com" }
   ];
 
   return (

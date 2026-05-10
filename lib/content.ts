@@ -15,7 +15,7 @@ export const labProjects: LabProject[] = [
     description:
       "A fast, open-source PDF reader built to avoid bloat — a custom rendering pipeline, GPU transform zoom, and the TriFlow contextual dock. Ships on desktop and Android.",
     year: "Dec 2025",
-    link: "https://sarthakg.tech/Kiosk/",
+    link: "https://krisplabs.me/Kiosk/",
     highlights: ["Custom rendering pipeline", "GPU transform zoom", "TriFlow contextual dock", "Desktop + Android"]
   },
   {
@@ -24,7 +24,7 @@ export const labProjects: LabProject[] = [
     description:
       "A local LLM-powered tool that analyses PDFs, surfaces insights, and lets you chat with your documents — entirely offline. Tauri wrapping a FastAPI + Ollama backend.",
     year: "Mar 2026",
-    link: "https://sarthakg.tech/Kiosk-Scholar/",
+    link: "https://krisplabs.me/Kiosk-Scholar/",
     highlights: ["Runs fully offline", "Local LLM (Ollama)", "PyMuPDF text extraction", "Chat with your PDFs"]
   },
   {
@@ -33,7 +33,7 @@ export const labProjects: LabProject[] = [
     description:
       "A lightweight task system that syncs through your own Google Drive instead of centralized servers. You own your data, on every device.",
     year: "Dec 2025",
-    link: "https://sarthakg.tech/ido/",
+    link: "https://krisplabs.me/ido/",
     highlights: ["You own your data", "Cross-device sync via Google Drive", "OAuth 2.0 PKCE — no backend", "Desktop, Android, Web"]
   },
   {
@@ -42,7 +42,7 @@ export const labProjects: LabProject[] = [
     description:
       "A nutrition scanner powered by the Open Food Facts API — scan a product, get the breakdown.",
     year: "Nov 2025 – Jan 2026",
-    link: "https://sarthakg.tech/NutriScan/",
+    link: "https://krisplabs.me/NutriScan/",
     highlights: ["Open Food Facts API", "Instant product breakdown", "Lightweight web app"],
     deprecated: true
   },
@@ -52,7 +52,7 @@ export const labProjects: LabProject[] = [
     description:
       "A Chrome extension (Manifest V3) that makes downloading files effortless — drag items onto a drop zone and they're saved.",
     year: "Aug 2025",
-    link: "https://sarthakg.tech/soura/",
+    link: "https://krisplabs.me/soura/",
     highlights: ["Manifest V3 extension", "Drag-and-drop drop zone", "Zero-friction downloads"]
   }
 ];
