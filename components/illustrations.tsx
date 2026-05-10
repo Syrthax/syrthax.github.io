@@ -755,3 +755,202 @@ export function ARCraftIllustration() {
     </IllustrationShell>
   );
 }
+
+// -----------------------------------------------------------------------
+// KrispLabs hero — conical flask with scroll-driven foam animation
+// -----------------------------------------------------------------------
+
+function FoamBubble({
+  scrollYProgress,
+  offsetX,
+  size,
+  inputRange,
+}: {
+  scrollYProgress: MotionValue<number>;
+  offsetX: number;
+  size: number;
+  inputRange: [number, number, number];
+}) {
+  const y = useTransform(scrollYProgress, inputRange, [0, -58, -130]);
+  const opacity = useTransform(scrollYProgress, inputRange, [0, 0.88, 0]);
+  const scale = useTransform(scrollYProgress, inputRange, [0.2, 1, 1.25]);
+
+  return (
+    <motion.div
+      style={{
+        y,
+        opacity,
+        scale,
+        position: "absolute",
+        top: "11%",
+        left: "50%",
+        marginLeft: offsetX - size / 2,
+        marginTop: -size / 2,
+        width: size,
+        height: size,
+        borderRadius: "50%",
+        background: "radial-gradient(circle at 35% 35%, #99f6e4, #0d9488)",
+      }}
+    />
+  );
+}
+
+export function KrispLabsFlaskIllustration() {
+  const ref = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+
+  const flaskY = useTransform(scrollYProgress, [0, 1], [12, -22]);
+  const flaskRotate = useTransform(scrollYProgress, [0, 1], [-3, 4]);
+
+  const foamBubbles: { offsetX: number; size: number; inputRange: [number, number, number] }[] = [
+    { offsetX: -13, size: 9,  inputRange: [0.05, 0.22, 0.44] },
+    { offsetX:  8,  size: 14, inputRange: [0.11, 0.30, 0.52] },
+    { offsetX: -4,  size: 7,  inputRange: [0.17, 0.36, 0.58] },
+    { offsetX: 15,  size: 11, inputRange: [0.23, 0.43, 0.65] },
+    { offsetX: -9,  size: 16, inputRange: [0.29, 0.50, 0.72] },
+    { offsetX:  3,  size: 8,  inputRange: [0.35, 0.56, 0.78] },
+    { offsetX: -1,  size: 11, inputRange: [0.41, 0.62, 0.84] },
+    { offsetX: 11,  size: 6,  inputRange: [0.47, 0.67, 0.88] },
+  ];
+
+  return (
+    <motion.div
+      ref={ref}
+      style={{ rotate: flaskRotate }}
+      className="relative h-[360px] w-full max-w-lg"
+    >
+      {foamBubbles.map((b, i) => (
+        <FoamBubble key={i} scrollYProgress={scrollYProgress} {...b} />
+      ))}
+
+      <motion.svg
+        viewBox="0 0 260 340"
+        className="absolute left-1/2 top-1/2 h-[300px] w-[230px] -translate-x-1/2 -translate-y-1/2"
+        style={{ y: flaskY }}
+      >
+        <defs>
+          <linearGradient id="kl-flask-bg" x1="0" y1="0" x2="0.2" y2="1">
+            <stop offset="0%" stopColor="#ccfbf1" />
+            <stop offset="38%" stopColor="#5eead4" />
+            <stop offset="100%" stopColor="#134e4a" />
+          </linearGradient>
+          <linearGradient id="kl-liquid" x1="0.1" y1="0" x2="0.5" y2="1">
+            <stop offset="0%" stopColor="#0d9488" />
+            <stop offset="100%" stopColor="#042f2e" />
+          </linearGradient>
+          <radialGradient id="kl-bubble-grad" cx="35%" cy="35%" r="65%">
+            <stop offset="0%" stopColor="#99f6e4" stopOpacity="0.9" />
+            <stop offset="100%" stopColor="#0d9488" stopOpacity="0.55" />
+          </radialGradient>
+          <clipPath id="kl-flask-clip">
+            <path d="M 105,24 C 105,15 155,15 155,24 L 155,98 C 173,112 212,182 226,278 Q 231,314 130,316 Q 29,314 34,278 C 48,182 87,112 105,98 Z" />
+          </clipPath>
+        </defs>
+
+        {/* Flask body fill */}
+        <path
+          d="M 105,24 C 105,15 155,15 155,24 L 155,98 C 173,112 212,182 226,278 Q 231,314 130,316 Q 29,314 34,278 C 48,182 87,112 105,98 Z"
+          fill="url(#kl-flask-bg)"
+        />
+
+        {/* Liquid and interior — clipped to flask */}
+        <g clipPath="url(#kl-flask-clip)">
+          {/* Liquid body */}
+          <path
+            d="M 35,180 Q 82,159 130,180 Q 178,201 225,180 L 225,314 Q 130,322 35,314 Z"
+            fill="url(#kl-liquid)"
+          />
+          {/* Animated wave on liquid surface */}
+          <motion.path
+            d="M 35,180 Q 82,159 130,180 Q 178,201 225,180"
+            fill="none"
+            stroke="#14b8a6"
+            strokeWidth="3"
+            strokeLinecap="round"
+            animate={{
+              d: [
+                "M 35,180 Q 82,159 130,180 Q 178,201 225,180",
+                "M 35,184 Q 82,164 130,176 Q 178,188 225,184",
+                "M 35,180 Q 82,159 130,180 Q 178,201 225,180",
+              ],
+            }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+          />
+          {/* Bubbles inside liquid */}
+          {[
+            { cx: 88,  cy: 258, r: 19 },
+            { cx: 166, cy: 228, r: 13 },
+            { cx: 77,  cy: 204, r: 9  },
+            { cx: 150, cy: 280, r: 7  },
+            { cx: 110, cy: 296, r: 5  },
+            { cx: 180, cy: 268, r: 8  },
+            { cx: 53,  cy: 282, r: 6  },
+          ].map((b, i) => (
+            <motion.circle
+              key={i}
+              cx={b.cx}
+              cy={b.cy}
+              r={b.r}
+              fill="url(#kl-bubble-grad)"
+              animate={{ cy: [b.cy, b.cy - 7, b.cy] }}
+              transition={{
+                duration: 2.2 + i * 0.35,
+                delay: i * 0.28,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
+          ))}
+          {/* Glass highlights */}
+          <rect x="108" y="24" width="10" height="67" rx="5" fill="white" opacity="0.38" />
+          <ellipse
+            cx="74"
+            cy="158"
+            rx="20"
+            ry="36"
+            fill="white"
+            opacity="0.11"
+            transform="rotate(-17, 74, 158)"
+          />
+        </g>
+
+        {/* Flask border */}
+        <path
+          d="M 105,24 C 105,15 155,15 155,24 L 155,98 C 173,112 212,182 226,278 Q 231,314 130,316 Q 29,314 34,278 C 48,182 87,112 105,98 Z"
+          fill="none"
+          stroke="#0f766e"
+          strokeWidth="3.5"
+          strokeLinejoin="round"
+        />
+        {/* Inner rim at neck top */}
+        <path
+          d="M 109,24 C 109,19 151,19 151,24"
+          fill="none"
+          stroke="#134e4a"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+
+        {/* Sparkle — large */}
+        <motion.path
+          d="M 210,65 L 214.2,78 L 227,82 L 214.2,86 L 210,99 L 205.8,86 L 193,82 L 205.8,78 Z"
+          fill="#5eead4"
+          animate={{ scale: [1, 1.18, 1], opacity: [0.85, 1, 0.85] }}
+          transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
+          style={{ transformOrigin: "210px 82px" }}
+        />
+        {/* Sparkle — small */}
+        <motion.path
+          d="M 199,106 L 201.5,113 L 209,115.5 L 201.5,118 L 199,125 L 196.5,118 L 189,115.5 L 196.5,113 Z"
+          fill="#2dd4bf"
+          animate={{ scale: [1, 1.22, 1], opacity: [0.7, 1, 0.7] }}
+          transition={{ duration: 1.9, delay: 0.8, repeat: Infinity, ease: "easeInOut" }}
+          style={{ transformOrigin: "199px 115.5px" }}
+        />
+      </motion.svg>
+    </motion.div>
+  );
+}

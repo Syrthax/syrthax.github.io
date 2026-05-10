@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0.2" y2="1">
+      <stop offset="0%" stop-color="#ccfbf1"/>
+      <stop offset="38%" stop-color="#5eead4"/>
+      <stop offset="100%" stop-color="#134e4a"/>
+    </linearGradient>
+    <linearGradient id="liq" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0%" stop-color="#0d9488"/>
+      <stop offset="100%" stop-color="#042f2e"/>
+    </linearGradient>
+    <clipPath id="fc">
+      <path d="M 25,6 C 25,3.5 39,3.5 39,6 L 39,23 C 43,26 52,43 54,58 Q 55,63 32,63 Q 9,63 10,58 C 12,43 21,26 25,23 Z"/>
+    </clipPath>
+  </defs>
+
+  <!-- Flask body -->
+  <path d="M 25,6 C 25,3.5 39,3.5 39,6 L 39,23 C 43,26 52,43 54,58 Q 55,63 32,63 Q 9,63 10,58 C 12,43 21,26 25,23 Z"
+        fill="url(#g)"/>
+
+  <!-- Liquid and bubbles clipped -->
+  <g clip-path="url(#fc)">
+    <path d="M 10,42 Q 32,36 54,42 L 54,63 Q 32,67 10,63 Z" fill="url(#liq)"/>
+    <circle cx="23" cy="54" r="4.5" fill="#2dd4bf" opacity="0.75"/>
+    <circle cx="41" cy="48" r="3" fill="#2dd4bf" opacity="0.65"/>
+    <circle cx="30" cy="57" r="2.5" fill="#99f6e4" opacity="0.6"/>
+    <!-- Glass shine on neck -->
+    <rect x="26.5" y="6" width="3" height="16" rx="1.5" fill="white" opacity="0.4"/>
+  </g>
+
+  <!-- Flask border -->
+  <path d="M 25,6 C 25,3.5 39,3.5 39,6 L 39,23 C 43,26 52,43 54,58 Q 55,63 32,63 Q 9,63 10,58 C 12,43 21,26 25,23 Z"
+        fill="none" stroke="#0f766e" stroke-width="1.5" stroke-linejoin="round"/>
+
+  <!-- Large sparkle -->
+  <path d="M 52,15 L 53.6,20 L 58.5,21.5 L 53.6,23 L 52,28 L 50.4,23 L 45.5,21.5 L 50.4,20 Z"
+        fill="#5eead4"/>
+  <!-- Small sparkle -->
+  <path d="M 48,32 L 49,35 L 52,36 L 49,37 L 48,40 L 47,37 L 44,36 L 47,35 Z"
+        fill="#2dd4bf"/>
+</svg>

@@ -5,7 +5,7 @@ import React, { useRef } from "react";
 import { focusAreas, labProjects, techBadgeGroups } from "@/lib/content";
 import { Reveal } from "./reveal";
 import {
-  HeroPdfAbstract,
+  KrispLabsFlaskIllustration,
   IDoTimelineIllustration,
   KioskIllustration,
   KioskScholarIllustration,
@@ -35,7 +35,7 @@ export function HeroSection() {
           <p className="subtle mt-4 max-w-xl">No bloat. No servers you didn&apos;t ask for. Just tools that work.</p>
         </div>
         <div className="flex justify-center lg:justify-end">
-          <HeroPdfAbstract />
+          <KrispLabsFlaskIllustration />
         </div>
       </motion.div>
     </section>
