@@ -272,7 +272,7 @@ export function ContactSection() {
   const links = [
     { label: "GitHub", href: "https://github.com/Syrthax" },
     { label: "LinkedIn", href: "https://www.linkedin.com/in/sarthak-g11/" },
-    { label: "Email", href: "https://contact.sarthakg.com" },
+    { label: "Email", href: "mailto:hello@sarthakg.com" },
     { label: "Personal site", href: "https://sarthakg.com" }
   ];
 
@@ -290,8 +290,8 @@ export function ContactSection() {
           <motion.a
             key={link.label}
             href={link.href}
-            target="_blank"
-            rel="noreferrer"
+            target={link.href.startsWith("http") ? "_blank" : undefined}
+            rel={link.href.startsWith("http") ? "noreferrer" : undefined}
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
